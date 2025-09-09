@@ -1,6 +1,10 @@
 // Debug: Kontrola načtení skriptu
 console.log('JavaScript se načetl úspěšně!');
 
+// Import a inicializace PocketBase klienta
+import PocketBase from 'https://cdn.jsdelivr.net/npm/pocketbase@0.21.1/dist/pocketbase.es.mjs';
+const pb = new PocketBase('http://127.0.0.1:8090');
+
 // Čekáme na načtení DOM
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM je načten!');
@@ -142,50 +146,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Načte úkoly z localStorage
+     * Načte úkoly z PocketBase
      */
-    function loadTodos() {
+    async function loadTodos() {
         try {
-            const todos = JSON.parse(localStorage.getItem('todos')) || [];
-            todos.reverse().forEach(todo => addTodoToDOM(todo, false));
+            const records = await pb.collection('todos').getFullList({
+                sort: '-created',
+            });
+            records.forEach(todo => addTodoToDOM(todo, false));
             updateTaskSummary();
             updateStats();
         } catch (error) {
-            console.error('Chyba při načítání úkolů:', error);
+            console.error('Chyba při načítání úkolů z PocketBase:', error);
             showToast('Chyba při načítání úkolů', 'error');
-        }
-    }
-
-    /**
-     * Uloží úkoly do localStorage
-     */
-    function saveTodos() {
-        try {
-            const todos = [];
-            document.querySelectorAll('#todo-list .todo-box').forEach(item => {
-                const textSpan = item.querySelector('.todo-text-span');
-                if (textSpan) {
-                    todos.push({
-                        text: textSpan.textContent,
-                        completed: item.classList.contains('completed'),
-                        deleted: item.classList.contains('deleted'),
-                        category: item.dataset.category || '',
-                        priority: item.dataset.priority || 'low',
-                        dueDate: item.dataset.dueDate || '',
-                        notes: item.dataset.notes || '',
-                        timeEstimate: item.dataset.timeEstimate || '',
-                        repeat: item.dataset.repeat || '',
-                        createdAt: item.dataset.createdAt || new Date().toISOString(),
-                        deletedAt: item.dataset.deletedAt || '',
-                        completedAt: item.dataset.completedAt || ''
-                    });
-                }
-            });
-            localStorage.setItem('todos', JSON.stringify(todos));
-            updateTaskSummary();
-        } catch (error) {
-            console.error('Chyba při ukládání úkolů:', error);
-            showToast('Chyba při ukládání úkolů', 'error');
         }
     }
 
@@ -296,6 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Uložení dat do datasetu
+        newTodoItem.dataset.id = todo.id;
         newTodoItem.dataset.category = todo.category || '';
         newTodoItem.dataset.priority = todo.priority || 'low';
         newTodoItem.dataset.dueDate = todo.dueDate || '';
@@ -313,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (todo.completed) {
                 checkbox.classList.add('completed');
             }
-            checkbox.addEventListener('click', () => {
+            checkbox.addEventListener('click', async () => {
                 const wasCompleted = newTodoItem.classList.contains('completed');
                 newTodoItem.classList.toggle('completed');
                 checkbox.classList.toggle('completed');
@@ -328,7 +302,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     newTodoItem.dataset.completedAt = '';
                 }
 
-                saveTodos();
+                await pb.collection('todos').update(newTodoItem.dataset.id, {
+                    completed: newTodoItem.classList.contains('completed'),
+                    completedAt: newTodoItem.dataset.completedAt || null
+                });
+
                 filterTodos(currentFilter);
             });
             newTodoItem.appendChild(checkbox);
@@ -528,7 +506,7 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
      * Soft delete úkolu
      */
-    function deleteTodo(todoItem) {
+    async function deleteTodo(todoItem) {
         todoItem.classList.add('deleted');
         todoItem.dataset.deletedAt = new Date().toISOString();
 
@@ -540,7 +518,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aktualizace action tlačítek
         updateTodoActions(todoItem);
 
-        saveTodos();
+        await pb.collection('todos').update(todoItem.dataset.id, {
+            deleted: true,
+            deletedAt: todoItem.dataset.deletedAt
+        });
+
         filterTodos(currentFilter);
         showToast('Úkol byl smazán');
     }
@@ -548,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
      * Obnoví smazaný úkol
      */
-    function restoreTodo(todoItem) {
+    async function restoreTodo(todoItem) {
         todoItem.classList.remove('deleted');
         delete todoItem.dataset.deletedAt;
 
@@ -558,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (todoItem.classList.contains('completed')) {
             checkbox.classList.add('completed');
         }
-        checkbox.addEventListener('click', () => {
+        checkbox.addEventListener('click', async () => {
             const wasCompleted = todoItem.classList.contains('completed');
             todoItem.classList.toggle('completed');
             checkbox.classList.toggle('completed');
@@ -572,7 +554,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 todoItem.dataset.completedAt = '';
             }
 
-            saveTodos();
+            await pb.collection('todos').update(todoItem.dataset.id, {
+                completed: todoItem.classList.contains('completed'),
+                completedAt: todoItem.dataset.completedAt || null
+            });
+
             filterTodos(currentFilter);
         });
 
@@ -582,7 +568,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aktualizace action tlačítek
         updateTodoActions(todoItem);
 
-        saveTodos();
+        await pb.collection('todos').update(todoItem.dataset.id, {
+            deleted: false,
+            deletedAt: null
+        });
+
         filterTodos(currentFilter);
         showToast('Úkol byl obnoven');
     }
@@ -590,15 +580,20 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
      * Trvale smaže úkol
      */
-    function permanentDeleteTodo(todoItem) {
+    async function permanentDeleteTodo(todoItem) {
         if (confirm('Opravdu chcete trvale smazat tento úkol? Tato akce je nevratná.')) {
             todoItem.classList.add('removing');
-            setTimeout(() => {
-                todoItem.remove();
-                saveTodos();
-                filterTodos(currentFilter);
-                showToast('Úkol byl trvale smazán');
-            }, 200);
+            try {
+                await pb.collection('todos').delete(todoItem.dataset.id);
+                setTimeout(() => {
+                    todoItem.remove();
+                    filterTodos(currentFilter);
+                    showToast('Úkol byl trvale smazán');
+                }, 200);
+            } catch (error) {
+                console.error('Chyba při mazání úkolu z PocketBase:', error);
+                showToast('Chyba při trvalém mazání úkolu', 'error');
+            }
         }
     }
 
@@ -771,8 +766,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     todoList.insertBefore(draggedElement, todoItem.nextSibling);
                 }
-
-                saveTodos();
                 showToast('Pořadí úkolů změněno');
             }
         });
@@ -781,7 +774,7 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
      * Hromadné dokončení všech aktivních úkolů
      */
-    function bulkCompleteAll() {
+    async function bulkCompleteAll() {
         const activeItems = todoList.querySelectorAll('.todo-box:not(.completed):not(.deleted)');
         if (activeItems.length === 0) {
             showToast('Žádné aktivní úkoly k dokončení', 'warning');
@@ -789,26 +782,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (confirm(`Opravdu chcete označit všech ${activeItems.length} úkolů jako dokončené?`)) {
-            activeItems.forEach(item => {
+            const updatePromises = Array.from(activeItems).map(item => {
                 item.classList.add('completed');
                 const checkbox = item.querySelector('.desktop-checkbox');
                 if (checkbox) {
                     checkbox.classList.add('completed');
                 }
                 item.dataset.completedAt = new Date().toISOString();
+                return pb.collection('todos').update(item.dataset.id, {
+                    completed: true,
+                    completedAt: item.dataset.completedAt
+                });
             });
 
-            saveCompletionDate();
-            saveTodos();
-            filterTodos(currentFilter);
-            showToast(`${activeItems.length} úkolů dokončeno!`);
+            try {
+                await Promise.all(updatePromises);
+                saveCompletionDate();
+                filterTodos(currentFilter);
+                showToast(`${activeItems.length} úkolů dokončeno!`);
+            } catch (error) {
+                console.error('Chyba při hromadném dokončování úkolů:', error);
+                showToast('Chyba při dokončování úkolů', 'error');
+            }
         }
     }
 
     /**
      * Hromadné smazání všech úkolů
      */
-    function bulkDeleteAll() {
+    async function bulkDeleteAll() {
         const visibleItems = todoList.querySelectorAll('.todo-box:not(.deleted)');
         if (visibleItems.length === 0) {
             showToast('Žádné úkoly ke smazání', 'warning');
@@ -816,17 +818,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (confirm(`Opravdu chcete smazat všech ${visibleItems.length} úkolů? Budou přesunuty do koše.`)) {
-            visibleItems.forEach(item => {
-                deleteTodo(item);
+            const updatePromises = Array.from(visibleItems).map(item => {
+                item.classList.add('deleted');
+                item.dataset.deletedAt = new Date().toISOString();
+                updateTodoActions(item);
+                const checkbox = item.querySelector('.desktop-checkbox');
+                if (checkbox) checkbox.remove();
+                item.draggable = false;
+                return pb.collection('todos').update(item.dataset.id, {
+                    deleted: true,
+                    deletedAt: item.dataset.deletedAt
+                });
             });
-            showToast(`${visibleItems.length} úkolů smazáno`);
+
+            try {
+                await Promise.all(updatePromises);
+                filterTodos(currentFilter);
+                showToast(`${visibleItems.length} úkolů smazáno`);
+            } catch (error) {
+                console.error('Chyba při hromadném mazání úkolů:', error);
+                showToast('Chyba při mazání úkolů', 'error');
+            }
         }
     }
 
     /**
      * Vyčistí všechny dokončené úkoly
      */
-    function clearCompletedTasks() {
+    async function clearCompletedTasks() {
         const completedItems = todoList.querySelectorAll('.todo-box.completed:not(.deleted)');
         if (completedItems.length === 0) {
             showToast('Žádné dokončené úkoly k vyčištění', 'warning');
@@ -834,10 +853,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (confirm(`Opravdu chcete vyčistit ${completedItems.length} dokončených úkolů?`)) {
-            completedItems.forEach(item => {
-                deleteTodo(item);
+            const updatePromises = Array.from(completedItems).map(item => {
+                item.classList.add('deleted');
+                item.dataset.deletedAt = new Date().toISOString();
+                updateTodoActions(item);
+                const checkbox = item.querySelector('.desktop-checkbox');
+                if (checkbox) checkbox.remove();
+                item.draggable = false;
+                return pb.collection('todos').update(item.dataset.id, {
+                    deleted: true,
+                    deletedAt: item.dataset.deletedAt
+                });
             });
-            showToast(`${completedItems.length} dokončených úkolů vyčištěno`);
+
+            try {
+                await Promise.all(updatePromises);
+                filterTodos(currentFilter);
+                showToast(`${completedItems.length} dokončených úkolů vyčištěno`);
+            } catch (error) {
+                console.error('Chyba při čištění dokončených úkolů:', error);
+                showToast('Chyba při čištění dokončených úkolů', 'error');
+            }
         }
     }
 
@@ -870,7 +906,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Save button
-    saveBtn.addEventListener('click', () => {
+    saveBtn.addEventListener('click', async () => {
         const text = taskTextInput.value.trim();
         if (!text) {
             showToast('Zadejte název úkolu', 'warning');
@@ -886,31 +922,29 @@ document.addEventListener('DOMContentLoaded', function() {
             notes: taskNotesInput.value.trim(),
             timeEstimate: taskTimeEstimateSelect.value,
             repeat: taskRepeatSelect.value,
-            completed: false,
-            deleted: false,
-            createdAt: new Date().toISOString()
         };
 
-        if (editingTodoItem) {
-            // Úprava existujícího úkolu
-            // Zachování původních dat
-            todoData.completed = editingTodoItem.classList.contains('completed');
-            todoData.createdAt = editingTodoItem.dataset.createdAt;
-            todoData.completedAt = editingTodoItem.dataset.completedAt;
+        try {
+            if (editingTodoItem) {
+                // Úprava existujícího úkolu
+                const updatedRecord = await pb.collection('todos').update(editingTodoItem.dataset.id, todoData);
+                editingTodoItem.remove();
+                addTodoToDOM(updatedRecord, false);
+                showToast('Úkol byl upraven');
+            } else {
+                // Nový úkol
+                const newRecord = await pb.collection('todos').create(todoData);
+                addTodoToDOM(newRecord, true);
+                showToast('Úkol byl přidán');
+            }
 
-            editingTodoItem.remove();
-            addTodoToDOM(todoData, false);
-            showToast('Úkol byl upraven');
-        } else {
-            // Nový úkol
-            addTodoToDOM(todoData, true);
-            showToast('Úkol byl přidán');
+            advancedForm.classList.remove('active');
+            filterTodos(currentFilter);
+            editingTodoItem = null;
+        } catch (error) {
+            console.error('Chyba při ukládání do PocketBase:', error);
+            showToast('Chyba při ukládání úkolu', 'error');
         }
-
-        saveTodos();
-        advancedForm.classList.remove('active');
-        filterTodos(currentFilter);
-        editingTodoItem = null;
     });
 
     // Cancel button
@@ -950,11 +984,6 @@ document.addEventListener('DOMContentLoaded', function() {
     bulkCompleteBtn.addEventListener('click', bulkCompleteAll);
     bulkDeleteBtn.addEventListener('click', bulkDeleteAll);
     clearCompletedBtn.addEventListener('click', clearCompletedTasks);
-
-    // Auto-save při zavření stránky
-    window.addEventListener('beforeunload', () => {
-        saveTodos();
-    });
 
     // Kontrola notifikací pro overdue úkoly
     function checkNotifications() {
