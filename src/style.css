@@ -37,6 +37,10 @@ body::before {
 
 /* Desktop sidebar */
 .desktop-sidebar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
   width: 350px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 40px 30px;
@@ -379,7 +383,12 @@ input:checked + .theme-slider {
 }
 
 input:checked + .theme-slider .theme-slider-icon {
-  transform: translateX(30px);
+  transform: translateX(26px);
+  background: white;
+}
+/* Pravidlo pro světlý režim (výchozí) */
+.theme-slider .theme-slider-icon {
+  transform: translateX(0px);
   background: white;
 }
 
@@ -545,35 +554,38 @@ body.dark-theme::before {
 }
 
 /* Add button */
+/* Floating Add Button - Apple style */
 .desktop-add-btn {
-  padding: 16px 24px;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
   border: none;
-  border-radius: 15px;
-  background: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, #ffffff, #f3f4f6);
   color: #667eea;
-  font-size: 16px;
+  font-size: 28px;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-top: auto;
-  position: relative;
-  z-index: 1;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transition: all 0.25s ease;
+  z-index: 1000;
 }
 
 .desktop-add-btn:hover {
+  transform: scale(1.05) translateY(-3px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
   background: white;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-.desktop-add-btn .plus-icon {
-  font-size: 20px;
-  font-weight: 300;
+.desktop-add-btn svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.5;
 }
 
 /* Main content area */
