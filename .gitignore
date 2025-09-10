@@ -27,3 +27,6 @@ dist-ssr
 pb_data/
 pb_hooks/
 pb_migrations/
+
+# Node.js
+node_modules/
