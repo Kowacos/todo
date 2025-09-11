@@ -23,10 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# PocketBase data a migrace
-pb_data/
-pb_hooks/
-pb_migrations/
 
 # Node.js
 node_modules/
