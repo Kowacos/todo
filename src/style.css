@@ -40,7 +40,6 @@ body::before {
   position: relative;
   display: flex;
   flex-direction: column;
-
   width: 350px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 40px 30px;
@@ -386,6 +385,7 @@ input:checked + .theme-slider .theme-slider-icon {
   transform: translateX(26px);
   background: white;
 }
+
 /* Pravidlo pro světlý režim (výchozí) */
 .theme-slider .theme-slider-icon {
   transform: translateX(0px);
@@ -553,8 +553,7 @@ body.dark-theme::before {
   color: #cbd5e0;
 }
 
-/* Add button */
-/* Floating Add Button - Apple style */
+/* Floating Add Button - Apple style s opravenými animacemi */
 .desktop-add-btn {
   position: fixed;
   bottom: 30px;
@@ -572,20 +571,73 @@ body.dark-theme::before {
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
+  /* Přidané vlastnosti pro smooth interakce */
+  outline: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .desktop-add-btn:hover {
   transform: scale(1.05) translateY(-3px);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-  background: white;
+  background: linear-gradient(135deg, #ffffff, #ffffff);
+}
+
+/* Přidané aktivní stavy */
+.desktop-add-btn:active {
+  transform: scale(0.98) translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.desktop-add-btn:focus {
+  outline: none;
+  box-shadow:
+          0 10px 25px rgba(0, 0, 0, 0.2),
+          0 0 0 4px rgba(102, 126, 234, 0.3);
 }
 
 .desktop-add-btn svg {
   width: 28px;
   height: 28px;
   stroke-width: 2.5;
+}
+
+/* Dark theme verze */
+.dark-theme .desktop-add-btn {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: #a855f7;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.dark-theme .desktop-add-btn:hover {
+  background: linear-gradient(135deg, #16213e, #0f0f23);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+.dark-theme .desktop-add-btn:active {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.dark-theme .desktop-add-btn:focus {
+  box-shadow:
+          0 10px 25px rgba(0, 0, 0, 0.4),
+          0 0 0 4px rgba(168, 85, 247, 0.4);
+}
+
+/* Animace při načtení */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* Main content area */
@@ -596,7 +648,7 @@ body.dark-theme::before {
   overflow-y: auto;
 }
 
-/* Advanced input form */
+/* Advanced input form s opravenými animacemi */
 .advanced-input-form {
   background: white;
   border-radius: 16px;
@@ -605,22 +657,15 @@ body.dark-theme::before {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   display: none;
   border: 1px solid rgba(0, 0, 0, 0.05);
+  transform: translateY(-20px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .advanced-input-form.active {
   display: block;
-  animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  transform: translateY(0);
+  opacity: 1;
 }
 
 .form-grid {
@@ -654,7 +699,7 @@ body.dark-theme::before {
   border-radius: 10px;
   font-size: 16px;
   background: #f9fafb;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
   resize: vertical;
 }
@@ -668,7 +713,10 @@ textarea.form-input {
   outline: none;
   border-color: #667eea;
   background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow:
+          0 0 0 3px rgba(102, 126, 234, 0.1),
+          0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .form-select {
@@ -692,8 +740,10 @@ textarea.form-input {
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 100px;
+  outline: none;
+  user-select: none;
 }
 
 .form-btn.primary {
@@ -707,6 +757,18 @@ textarea.form-input {
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
+.form-btn.primary:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 12px rgba(102, 126, 234, 0.4);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-btn.primary:focus {
+  box-shadow:
+          0 4px 15px rgba(102, 126, 234, 0.3),
+          0 0 0 4px rgba(102, 126, 234, 0.2);
+}
+
 .form-btn.secondary {
   background: #f3f4f6;
   color: #374151;
@@ -715,6 +777,21 @@ textarea.form-input {
 
 .form-btn.secondary:hover {
   background: #e5e7eb;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-btn.secondary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-btn.secondary:focus {
+  outline: none;
+  box-shadow:
+          0 3px 10px rgba(0, 0, 0, 0.1),
+          0 0 0 4px rgba(59, 130, 246, 0.2);
 }
 
 /* Todo list */
