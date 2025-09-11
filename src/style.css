@@ -26,13 +26,13 @@ body::before {
   display: flex;
   width: 100%;
   max-width: 1200px;
-  height: calc(100vh - 40px); /* Tady je pevná výška! */
+  height: calc(100vh - 40px);
   margin: 0 auto;
   position: relative;
   z-index: 1;
   backdrop-filter: blur(20px);
   border-radius: 20px;
-  overflow: hidden; /* Tady musí být! */
+  overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
@@ -42,12 +42,12 @@ body::before {
   display: flex;
   flex-direction: column;
   flex-basis: 350px;
-  height: 100%; /* Důležité: Tím vyplní celou výšku rodiče. */
+  height: 100%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 40px 30px;
   color: white;
   position: relative;
-  overflow: hidden; /* Důležité: Tady musí být! */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   border-top-left-radius: 20px;
@@ -336,10 +336,10 @@ body::before {
 }
 
 .theme-switch {
-  position: fixed; /* Tady je ta změna */
-  right: 120px;    /* 120px od pravého okraje */
-  bottom: 40px;    /* 40px od spodního okraje */
-  z-index: 1000;   /* Zajištění, že bude nad ostatními prvky */
+  position: fixed;
+  top: 20px;      /* Změna na horní okraj */
+  right: 20px;     /* Změna na pravý okraj */
+  z-index: 1000;
   display: inline-block;
   width: 60px;
   height: 30px;
@@ -358,13 +358,13 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.2);
+  background: #e2e8f0; /* Změna: Plné, světle šedé pozadí */
   border-radius: 30px;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
-  /* Klíčové úpravy pro zarovnání */
   display: flex;
   align-items: center;
+  padding: 0 3px;
 }
 
 .theme-slider:hover {
@@ -380,28 +380,40 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 14px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Klíčové úpravy pro posun a mezeru */
-  margin-left: 3px;
+  flex-shrink: 0;
   transform: translateX(0);
 }
 
-input:checked + .theme-slider {
-  background: rgba(102, 126, 234, 0.6);
+.theme-slider-icon::before {
+  content: '☀️'; /* Ikona pro světlý režim */
+  display: flex; /* Použijeme flexbox pro perfektní centrování */
+  align-items: center; /* Vertikální centrování */
+  justify-content: center; /* Horizontální centrování */
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  box-sizing: border-box;
+  transform: translateY(-1px); /* Tady je klíčová úprava */
 }
 
 input:checked + .theme-slider .theme-slider-icon {
-  /* Dynamický výpočet posunu */
   transform: translateX(calc(100% + 3px * 2));
 }
 
-/* Pravidlo pro světlý režim (výchozí) */
-.theme-slider .theme-slider-icon {
-  transform: translateX(0px);
-  background: white;
+input:checked + .theme-slider .theme-slider-icon::before {
+  content: '🌙'; /* Ikona pro tmavý režim */
+  display: flex; /* Použijeme flexbox pro perfektní centrování */
+  align-items: center; /* Vertikální centrování */
+  justify-content: center; /* Horizontální centrování */
+  width: 100%; /* Vyplní celou šířku rodiče */
+  height: 100%; /* Vyplní celou výšku rodiče */
+  font-size: 14px; /* Zajištění správné velikosti ikony */
+  box-sizing: border-box; /* Aby padding a border nezvětšovaly prvek */
 }
 
+/* Dark theme styling for icon */
 .dark-theme .theme-slider-icon {
   background: #1a1a2e;
   color: white;
@@ -417,7 +429,6 @@ body.dark-theme::before {
 }
 
 .dark-theme .main-container {
-  /* ODSTRANĚNO: background: rgba(26, 26, 46, 0.95); */
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
@@ -428,8 +439,8 @@ body.dark-theme::before {
 .dark-theme .desktop-content {
   background: #0f0f23;
   color: #e2e8f0;
-  border-top-right-radius: 20px;  /* PŘIDÁNO */
-  border-bottom-right-radius: 20px;  /* PŘIDÁNO */
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 .dark-theme .advanced-input-form {
@@ -455,7 +466,7 @@ body.dark-theme::before {
 
 .dark-theme .form-input:focus,
 .dark-theme .form-select:focus {
-  background: #1a1a2e;
+  background: #13213e;
   border-color: #667eea;
   color: #e2e8f0;
 }
@@ -498,11 +509,13 @@ body.dark-theme::before {
 }
 
 .dark-theme .todo-box.priority-high {
-  background: linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, #1a1a2e 15%);
+  /* Změněno: Zvýšena neprůhlednost z 0.15 na 0.35 */
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.35) 0%, #1a1a2e 15%);
 }
 
 .dark-theme .todo-box.priority-medium {
-  background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, #1a1a2e 15%);
+  /* Změněno: Zvýšena neprůhlednost z 0.15 na 0.35 */
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.35) 0%, #1a1a2e 15%);
 }
 
 .dark-theme .todo-box.priority-low {
@@ -574,6 +587,14 @@ body.dark-theme::before {
   color: #cbd5e0;
 }
 
+.dark-theme .form-select {
+  /* Změna barvy SVG ikony pro tmavý režim */
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23cbd5e0" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
 /* Floating Add Button - Apple style s opravenými animacemi */
 .desktop-add-btn {
   position: fixed;
@@ -594,7 +615,6 @@ body.dark-theme::before {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
-  /* Přidané vlastnosti pro smooth interakce */
   outline: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -607,7 +627,6 @@ body.dark-theme::before {
   background: linear-gradient(135deg, #ffffff, #ffffff);
 }
 
-/* Přidané aktivní stavy */
 .desktop-add-btn:active {
   transform: scale(0.98) translateY(-1px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
@@ -666,7 +685,7 @@ body.dark-theme::before {
   flex: 1;
   padding: 40px;
   background: #f8f9fa;
-  overflow-y: auto; /* Tady je scrollování povoleno. */
+  overflow-y: auto;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
 }
@@ -1205,7 +1224,7 @@ textarea.form-input {
 .toast {
   position: fixed;
   top: 20px;
-  right: 20px;
+  left: 20px;
   background: #10b981;
   color: white;
   padding: 12px 24px;
@@ -1218,10 +1237,12 @@ textarea.form-input {
 
 .toast.error {
   background: #ef4444;
+  display: none;
 }
 
 .toast.warning {
   background: #f59e0b;
+  display: none;
 }
 
 @keyframes slideInRight {

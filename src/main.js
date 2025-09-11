@@ -1097,7 +1097,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const newTheme = isDark ? 'dark' : 'light';
             localStorage.setItem('theme', newTheme);
             themeToggleBtn.innerHTML = isDark ? '☀️' : '🌙';
-            showToast(`Tmavý režim ${isDark ? 'zapnut' : 'vypnut'}`);
+            // showToast(`Tmavý režim ${isDark ? 'zapnut' : 'vypnut'}`);
         });
     }
 

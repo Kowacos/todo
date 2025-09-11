@@ -6,9 +6,8 @@
   <title>Můj ToDo App</title>
   <link rel="stylesheet" href="./src/style.css">
 </head>
-<body>
+<body class="dark-theme">
 
-<!-- Plovoucí tlačítko -->
 <button id="add-task-btn" class="desktop-add-btn">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
        fill="none" stroke="currentColor" stroke-width="2.5"
@@ -17,6 +16,13 @@
     <path d="M12 5v14"/>
   </svg>
 </button>
+
+<label class="theme-switch">
+  <input type="checkbox" id="theme-toggle" checked>
+  <span class="theme-slider">
+    <span class="theme-slider-icon"></span>
+  </span>
+</label>
 
 <div class="main-container">
   <aside class="desktop-sidebar">
@@ -73,19 +79,6 @@
         <button class="bulk-btn" id="bulk-complete">Dokončit všechny</button>
         <button class="bulk-btn" id="bulk-delete">Smazat všechny</button>
         <button class="bulk-btn" id="clear-completed">Vyčistit dokončené</button>
-      </div>
-    </div>
-
-    <div class="theme-section">
-      <h3>Vzhled</h3>
-      <div class="theme-toggle-container">
-        <span class="theme-label">Tmavý režim</span>
-        <label class="theme-switch">
-          <input type="checkbox" id="theme-toggle">
-          <span class="theme-slider">
-            <span class="theme-slider-icon">🌙</span>
-          </span>
-        </label>
       </div>
     </div>
   </aside>
