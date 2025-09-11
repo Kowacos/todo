@@ -1,9 +1,11 @@
 body {
   margin: 0;
+  padding: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
-  color: #000;
+  overflow: hidden;
+  color: #111827;
   position: relative;
   padding: 20px;
 }
@@ -24,14 +26,13 @@ body::before {
   display: flex;
   width: 100%;
   max-width: 1200px;
-  min-height: calc(100vh - 40px);
+  height: calc(100vh - 40px); /* Tady je pevná výška! */
   margin: 0 auto;
   position: relative;
   z-index: 1;
-  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-radius: 20px;
-  overflow: hidden;
+  overflow: hidden; /* Tady musí být! */
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
@@ -40,14 +41,17 @@ body::before {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 350px;
+  flex-basis: 350px;
+  height: 100%; /* Důležité: Tím vyplní celou výšku rodiče. */
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 40px 30px;
   color: white;
   position: relative;
-  overflow: hidden;
+  overflow: hidden; /* Důležité: Tady musí být! */
   display: flex;
   flex-direction: column;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
 }
 
 .desktop-sidebar::before {
@@ -62,11 +66,11 @@ body::before {
 }
 
 .desktop-sidebar h1 {
-  font-size: 42px;
+  font-size: 44px;
   font-weight: 700;
   color: white;
   margin: 0 0 10px 0;
-  letter-spacing: -1px;
+  letter-spacing: -1.5px;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 1;
@@ -113,7 +117,7 @@ body::before {
 
 /* Search section */
 .search-section {
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   position: relative;
   z-index: 1;
 }
@@ -143,7 +147,7 @@ body::before {
 .search-input:focus {
   outline: none;
   background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
 }
 
 .clear-search-btn {
@@ -194,7 +198,7 @@ body::before {
   border-radius: 12px;
   text-align: center;
   backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  transition: all 0.2s ease-in-out;
 }
 
 .stat-item:hover {
@@ -204,6 +208,7 @@ body::before {
 
 .stat-item:nth-child(3) {
   grid-column: 1 / -1;
+  display:none;
 }
 
 .stat-number {
@@ -248,7 +253,7 @@ body::before {
   background: rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease-in-out;
   font-size: 15px;
   font-weight: 500;
   text-align: left;
@@ -258,14 +263,15 @@ body::before {
 .filter-btn:hover {
   background: rgba(255, 255, 255, 0.2);
   color: white;
-  transform: translateX(5px);
+  transform: translateX(8px);
 }
 
 .filter-btn.active {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   color: #667eea;
   font-weight: 600;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transform: translateX(0);
 }
 
 /* Bulk actions section */
@@ -330,7 +336,10 @@ body::before {
 }
 
 .theme-switch {
-  position: relative;
+  position: fixed; /* Tady je ta změna */
+  right: 120px;    /* 120px od pravého okraje */
+  bottom: 40px;    /* 40px od spodního okraje */
+  z-index: 1000;   /* Zajištění, že bude nad ostatními prvky */
   display: inline-block;
   width: 60px;
   height: 30px;
@@ -353,9 +362,9 @@ body::before {
   border-radius: 30px;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  /* Klíčové úpravy pro zarovnání */
   display: flex;
   align-items: center;
-  padding: 3px;
 }
 
 .theme-slider:hover {
@@ -363,8 +372,6 @@ body::before {
 }
 
 .theme-slider-icon {
-  position: absolute;
-  left: 6px;
   width: 24px;
   height: 24px;
   background: rgba(255, 255, 255, 0.9);
@@ -375,6 +382,9 @@ body::before {
   justify-content: center;
   font-size: 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Klíčové úpravy pro posun a mezeru */
+  margin-left: 3px;
+  transform: translateX(0);
 }
 
 input:checked + .theme-slider {
@@ -382,8 +392,8 @@ input:checked + .theme-slider {
 }
 
 input:checked + .theme-slider .theme-slider-icon {
-  transform: translateX(26px);
-  background: white;
+  /* Dynamický výpočet posunu */
+  transform: translateX(calc(100% + 3px * 2));
 }
 
 /* Pravidlo pro světlý režim (výchozí) */
@@ -407,7 +417,7 @@ body.dark-theme::before {
 }
 
 .dark-theme .main-container {
-  background: rgba(26, 26, 46, 0.95);
+  /* ODSTRANĚNO: background: rgba(26, 26, 46, 0.95); */
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
@@ -418,6 +428,8 @@ body.dark-theme::before {
 .dark-theme .desktop-content {
   background: #0f0f23;
   color: #e2e8f0;
+  border-top-right-radius: 20px;  /* PŘIDÁNO */
+  border-bottom-right-radius: 20px;  /* PŘIDÁNO */
 }
 
 .dark-theme .advanced-input-form {
@@ -464,6 +476,10 @@ body.dark-theme::before {
   color: #e2e8f0;
 }
 
+.dark-theme .stat-item {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .dark-theme .todo-box:hover {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
@@ -495,6 +511,7 @@ body.dark-theme::before {
 
 .dark-theme .todo-box.overdue:not(.completed) {
   background: linear-gradient(90deg, rgba(239, 68, 68, 0.2) 0%, #1a1a2e 15%);
+  animation: pulseDark 1s infinite alternate;
 }
 
 .dark-theme .todo-box.due-today:not(.completed) {
@@ -504,6 +521,10 @@ body.dark-theme::before {
 .dark-theme .todo-box.deleted {
   background: #2d1b1b;
   border-left-color: #ef4444;
+}
+
+.dark-theme .todo-box.deleted .todo-actions {
+  opacity: 1;
 }
 
 .dark-theme .desktop-checkbox {
@@ -645,7 +666,31 @@ body.dark-theme::before {
   flex: 1;
   padding: 40px;
   background: #f8f9fa;
-  overflow-y: auto;
+  overflow-y: auto; /* Tady je scrollování povoleno. */
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+/* Scrollbar styling */
+.desktop-content::-webkit-scrollbar {
+  width: 10px;
+  background: transparent;
+}
+.desktop-content::-webkit-scrollbar-thumb {
+  background-color: rgba(102, 126, 234, 0.4);
+  border-radius: 5px;
+  border: 2px solid transparent;
+}
+.desktop-content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(102, 126, 234, 0.6);
+}
+
+/* Dark theme scrollbar */
+.dark-theme .desktop-content::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+.dark-theme .desktop-content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 /* Advanced input form s opravenými animacemi */
@@ -816,6 +861,14 @@ textarea.form-input {
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+.todo-box.adding {
+  animation: fadeInDown 0.4s ease-out;
+}
+
+.todo-box.removing {
+  animation: fadeOutUp 0.4s ease-in forwards;
+}
+
 .todo-box:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
@@ -823,17 +876,15 @@ textarea.form-input {
 
 .todo-box.priority-high {
   border-left-color: #ef4444;
-  background: linear-gradient(90deg, rgba(239, 68, 68, 0.05) 0%, white 15%);
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.4) 0%, rgba(255, 255, 255, 0.4) 100%);
 }
-
 .todo-box.priority-medium {
   border-left-color: #f59e0b;
-  background: linear-gradient(90deg, rgba(245, 158, 11, 0.05) 0%, white 15%);
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.4) 0%, rgba(255, 255, 255, 0.4) 100%);
 }
-
 .todo-box.priority-low {
   border-left-color: #10b981;
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.05) 0%, white 15%);
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.4) 0%, rgba(255, 255, 255, 0.4) 100%);
 }
 
 .todo-box.completed {
@@ -846,14 +897,10 @@ textarea.form-input {
   color: #6b7280;
 }
 
-.todo-box.removing {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
 .todo-box.overdue:not(.completed) {
   border-left-color: #ef4444;
   background: linear-gradient(90deg, rgba(239, 68, 68, 0.1) 0%, white 15%);
+  animation: pulseLight 1s infinite alternate;
 }
 
 .todo-box.due-today:not(.completed) {
@@ -896,7 +943,7 @@ textarea.form-input {
 .desktop-checkbox {
   width: 24px;
   height: 24px;
-  border: 2px solid #d1d5db;
+  border: 2px solid #667eea;
   border-radius: 6px;
   margin-right: 16px;
   cursor: pointer;
@@ -914,7 +961,7 @@ textarea.form-input {
 }
 
 .desktop-checkbox.completed {
-  background: #10b981;
+  background: #667eea;
   border-color: #10b981;
 }
 
@@ -1055,6 +1102,7 @@ textarea.form-input {
 
 .todo-box:hover .todo-actions {
   opacity: 1;
+  animation: slideInLeft 0.3s ease-out;
 }
 
 .todo-actions button {
@@ -1187,6 +1235,29 @@ textarea.form-input {
   }
 }
 
+/* New animations */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOutUp {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-20px); }
+}
+@keyframes pulseLight {
+  from { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+  to { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
+}
+@keyframes pulseDark {
+  from { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); }
+  to { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+
 /* Hide mobile elements */
 .ios-header,
 .ios-segmented-control,
@@ -1220,7 +1291,9 @@ textarea.form-input {
   }
 
   .stats-grid {
+    display: grid;
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .bulk-buttons {
@@ -1232,5 +1305,11 @@ textarea.form-input {
     flex: 1;
     padding: 8px 12px;
     font-size: 13px;
+  }
+
+  /* Větší akční tlačítka pro dotyk */
+  .todo-actions button {
+    width: 44px;
+    height: 44px;
   }
 }
