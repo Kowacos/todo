@@ -1,9 +1,9 @@
 // Debug: Kontrola načtení skriptu
 console.log('JavaScript se načetl úspěšně!');
 
-// Import a inicializace PocketBase klienta
-import PocketBase from 'https://cdn.jsdelivr.net/npm/pocketbase@0.21.1/dist/pocketbase.es.mjs';
-const pb = new PocketBase('https://a60fd21464f9.ngrok-free.app');
+// Import a inicializace Supabase klienta
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+const supabase = createClient('https://xlddivqarpaomvotuurt.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsZGRpdnFhcnBhb212b3R1dXJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc0NDg4MzYsImV4cCI6MjA3MzAyNDgzNn0.Z7vs4YjhWrc72NBkDcjUfUqfSlyK4oKD7JbprR1GFEw');
 
 // Čekáme na načtení DOM
 document.addEventListener('DOMContentLoaded', function() {
@@ -146,18 +146,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Načte úkoly z PocketBase
+     * Načte úkoly z Supabase
      */
     async function loadTodos() {
         try {
-            const records = await pb.collection('todos').getFullList({
-                sort: '-created',
+            const { data: records, error } = await supabase
+                .from('todos')
+                .select('*')
+                .order('created_at', { ascending: false });
+            if (error) throw error;
+            records.forEach(todo => {
+                // Převod názvů sloupců z Supabase na formát očekávaný kódem
+                todo.dueDate = todo.due_date;
+                todo.timeEstimate = todo.time_estimate;
+                todo.completedAt = todo.completed_at;
+                todo.deletedAt = todo.deleted_at;
+                addTodoToDOM(todo, false);
             });
-            records.forEach(todo => addTodoToDOM(todo, false));
             updateTaskSummary();
             updateStats();
         } catch (error) {
-            console.error('Chyba při načítání úkolů z PocketBase:', error);
+            console.error('Chyba při načítání úkolů z Supabase:', error);
             showToast('Chyba při načítání úkolů', 'error');
         }
     }
@@ -272,13 +281,13 @@ document.addEventListener('DOMContentLoaded', function() {
         newTodoItem.dataset.id = todo.id;
         newTodoItem.dataset.category = todo.category || '';
         newTodoItem.dataset.priority = todo.priority || 'low';
-        newTodoItem.dataset.dueDate = todo.dueDate || '';
+        newTodoItem.dataset.dueDate = todo.due_date || '';
         newTodoItem.dataset.notes = todo.notes || '';
-        newTodoItem.dataset.timeEstimate = todo.timeEstimate || '';
+        newTodoItem.dataset.timeEstimate = todo.time_estimate || '';
         newTodoItem.dataset.repeat = todo.repeat || '';
-        newTodoItem.dataset.createdAt = todo.createdAt || new Date().toISOString();
-        newTodoItem.dataset.deletedAt = todo.deletedAt || '';
-        newTodoItem.dataset.completedAt = todo.completedAt || '';
+        newTodoItem.dataset.createdAt = todo.created_at || new Date().toISOString();
+        newTodoItem.dataset.deletedAt = todo.deleted_at || '';
+        newTodoItem.dataset.completedAt = todo.completed_at || '';
 
         // Desktop checkbox - pouze pro nesmazané úkoly
         if (!todo.deleted) {
@@ -302,12 +311,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     newTodoItem.dataset.completedAt = '';
                 }
 
-                await pb.collection('todos').update(newTodoItem.dataset.id, {
-                    completed: newTodoItem.classList.contains('completed'),
-                    completedAt: newTodoItem.dataset.completedAt || null
-                });
-
-                filterTodos(currentFilter);
+                try {
+                    await supabase
+                        .from('todos')
+                        .update({
+                            completed: newTodoItem.classList.contains('completed'),
+                            completed_at: newTodoItem.dataset.completedAt || null
+                        })
+                        .eq('id', newTodoItem.dataset.id);
+                    filterTodos(currentFilter);
+                } catch (error) {
+                    console.error('Chyba při aktualizaci:', error);
+                    showToast('Chyba při aktualizaci úkolu', 'error');
+                }
             });
             newTodoItem.appendChild(checkbox);
         }
@@ -332,25 +348,25 @@ document.addEventListener('DOMContentLoaded', function() {
             todoMeta.appendChild(categorySpan);
         }
 
-        if (todo.dueDate) {
+        if (todo.due_date) {
             const dueDateSpan = document.createElement('span');
             dueDateSpan.classList.add('todo-due-date');
-            dueDateSpan.textContent = formatDate(todo.dueDate);
+            dueDateSpan.textContent = formatDate(todo.due_date);
 
             const today = new Date().toISOString().split('T')[0];
-            if (todo.dueDate < today && !todo.completed) {
+            if (todo.due_date < today && !todo.completed) {
                 dueDateSpan.classList.add('overdue');
-            } else if (todo.dueDate === today) {
+            } else if (todo.due_date === today) {
                 dueDateSpan.classList.add('today');
             }
 
             todoMeta.appendChild(dueDateSpan);
         }
 
-        if (todo.timeEstimate) {
+        if (todo.time_estimate) {
             const timeEstimateSpan = document.createElement('span');
             timeEstimateSpan.classList.add('todo-time-estimate');
-            timeEstimateSpan.textContent = formatTimeEstimate(todo.timeEstimate);
+            timeEstimateSpan.textContent = formatTimeEstimate(todo.time_estimate);
             todoMeta.appendChild(timeEstimateSpan);
         }
 
@@ -427,11 +443,11 @@ document.addEventListener('DOMContentLoaded', function() {
             text: todoItem.querySelector('.todo-text-span').textContent,
             category: todoItem.dataset.category,
             priority: todoItem.dataset.priority,
-            dueDate: todoItem.dataset.dueDate,
+            due_date: todoItem.dataset.dueDate,
             notes: todoItem.dataset.notes,
-            timeEstimate: todoItem.dataset.timeEstimate,
+            time_estimate: todoItem.dataset.timeEstimate,
             repeat: todoItem.dataset.repeat,
-            createdAt: todoItem.dataset.createdAt,
+            created_at: todoItem.dataset.createdAt,
             completed: todoItem.classList.contains('completed')
         };
 
@@ -490,9 +506,9 @@ document.addEventListener('DOMContentLoaded', function() {
         taskTextInput.value = todo.text;
         taskCategorySelect.value = todo.category || '';
         taskPrioritySelect.value = todo.priority || 'low';
-        taskDueDateInput.value = todo.dueDate || '';
+        taskDueDateInput.value = todo.due_date || '';
         taskNotesInput.value = todo.notes || '';
-        taskTimeEstimateSelect.value = todo.timeEstimate || '';
+        taskTimeEstimateSelect.value = todo.time_estimate || '';
         taskRepeatSelect.value = todo.repeat || '';
 
         advancedForm.classList.add('active');
@@ -518,13 +534,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aktualizace action tlačítek
         updateTodoActions(todoItem);
 
-        await pb.collection('todos').update(todoItem.dataset.id, {
-            deleted: true,
-            deletedAt: todoItem.dataset.deletedAt
-        });
-
-        filterTodos(currentFilter);
-        showToast('Úkol byl smazán');
+        try {
+            await supabase
+                .from('todos')
+                .update({
+                    deleted: true,
+                    deleted_at: todoItem.dataset.deletedAt
+                })
+                .eq('id', todoItem.dataset.id);
+            filterTodos(currentFilter);
+            showToast('Úkol byl smazán');
+        } catch (error) {
+            console.error('Chyba při mazání:', error);
+            showToast('Chyba při mazání úkolu', 'error');
+        }
     }
 
     /**
@@ -554,12 +577,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 todoItem.dataset.completedAt = '';
             }
 
-            await pb.collection('todos').update(todoItem.dataset.id, {
-                completed: todoItem.classList.contains('completed'),
-                completedAt: todoItem.dataset.completedAt || null
-            });
-
-            filterTodos(currentFilter);
+            try {
+                await supabase
+                    .from('todos')
+                    .update({
+                        completed: todoItem.classList.contains('completed'),
+                        completed_at: todoItem.dataset.completedAt || null
+                    })
+                    .eq('id', todoItem.dataset.id);
+                filterTodos(currentFilter);
+            } catch (error) {
+                console.error('Chyba při aktualizaci:', error);
+                showToast('Chyba při aktualizaci úkolu', 'error');
+            }
         });
 
         todoItem.insertBefore(checkbox, todoItem.firstChild);
@@ -568,13 +598,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aktualizace action tlačítek
         updateTodoActions(todoItem);
 
-        await pb.collection('todos').update(todoItem.dataset.id, {
-            deleted: false,
-            deletedAt: null
-        });
-
-        filterTodos(currentFilter);
-        showToast('Úkol byl obnoven');
+        try {
+            await supabase
+                .from('todos')
+                .update({
+                    deleted: false,
+                    deleted_at: null
+                })
+                .eq('id', todoItem.dataset.id);
+            filterTodos(currentFilter);
+            showToast('Úkol byl obnoven');
+        } catch (error) {
+            console.error('Chyba při obnově:', error);
+            showToast('Chyba při obnově úkolu', 'error');
+        }
     }
 
     /**
@@ -584,14 +621,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (confirm('Opravdu chcete trvale smazat tento úkol? Tato akce je nevratná.')) {
             todoItem.classList.add('removing');
             try {
-                await pb.collection('todos').delete(todoItem.dataset.id);
+                await supabase.from('todos').delete().eq('id', todoItem.dataset.id);
                 setTimeout(() => {
                     todoItem.remove();
                     filterTodos(currentFilter);
                     showToast('Úkol byl trvale smazán');
                 }, 200);
             } catch (error) {
-                console.error('Chyba při mazání úkolu z PocketBase:', error);
+                console.error('Chyba při mazání:', error);
                 showToast('Chyba při trvalém mazání úkolu', 'error');
             }
         }
@@ -789,10 +826,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     checkbox.classList.add('completed');
                 }
                 item.dataset.completedAt = new Date().toISOString();
-                return pb.collection('todos').update(item.dataset.id, {
-                    completed: true,
-                    completedAt: item.dataset.completedAt
-                });
+                return supabase
+                    .from('todos')
+                    .update({
+                        completed: true,
+                        completed_at: item.dataset.completedAt
+                    })
+                    .eq('id', item.dataset.id);
             });
 
             try {
@@ -825,10 +865,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const checkbox = item.querySelector('.desktop-checkbox');
                 if (checkbox) checkbox.remove();
                 item.draggable = false;
-                return pb.collection('todos').update(item.dataset.id, {
-                    deleted: true,
-                    deletedAt: item.dataset.deletedAt
-                });
+                return supabase
+                    .from('todos')
+                    .update({
+                        deleted: true,
+                        deleted_at: item.dataset.deletedAt
+                    })
+                    .eq('id', item.dataset.id);
             });
 
             try {
@@ -860,10 +903,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const checkbox = item.querySelector('.desktop-checkbox');
                 if (checkbox) checkbox.remove();
                 item.draggable = false;
-                return pb.collection('todos').update(item.dataset.id, {
-                    deleted: true,
-                    deletedAt: item.dataset.deletedAt
-                });
+                return supabase
+                    .from('todos')
+                    .update({
+                        deleted: true,
+                        deleted_at: item.dataset.deletedAt
+                    })
+                    .eq('id', item.dataset.id);
             });
 
             try {
@@ -918,22 +964,41 @@ document.addEventListener('DOMContentLoaded', function() {
             text: text,
             category: taskCategorySelect.value,
             priority: taskPrioritySelect.value,
-            dueDate: taskDueDateInput.value,
+            due_date: taskDueDateInput.value,
             notes: taskNotesInput.value.trim(),
-            timeEstimate: taskTimeEstimateSelect.value,
+            time_estimate: taskTimeEstimateSelect.value,
             repeat: taskRepeatSelect.value,
         };
 
         try {
             if (editingTodoItem) {
                 // Úprava existujícího úkolu
-                const updatedRecord = await pb.collection('todos').update(editingTodoItem.dataset.id, todoData);
+                const { data: updatedRecord, error } = await supabase
+                    .from('todos')
+                    .update(todoData)
+                    .eq('id', editingTodoItem.dataset.id)
+                    .select()
+                    .single();
+                if (error) throw error;
                 editingTodoItem.remove();
+                updatedRecord.dueDate = updatedRecord.due_date;
+                updatedRecord.timeEstimate = updatedRecord.time_estimate;
+                updatedRecord.completedAt = updatedRecord.completed_at;
+                updatedRecord.deletedAt = updatedRecord.deleted_at;
                 addTodoToDOM(updatedRecord, false);
                 showToast('Úkol byl upraven');
             } else {
                 // Nový úkol
-                const newRecord = await pb.collection('todos').create(todoData);
+                const { data: newRecord, error } = await supabase
+                    .from('todos')
+                    .insert(todoData)
+                    .select()
+                    .single();
+                if (error) throw error;
+                newRecord.dueDate = newRecord.due_date;
+                newRecord.timeEstimate = newRecord.time_estimate;
+                newRecord.completedAt = newRecord.completed_at;
+                newRecord.deletedAt = newRecord.deleted_at;
                 addTodoToDOM(newRecord, true);
                 showToast('Úkol byl přidán');
             }
@@ -942,8 +1007,12 @@ document.addEventListener('DOMContentLoaded', function() {
             filterTodos(currentFilter);
             editingTodoItem = null;
         } catch (error) {
-            console.error('Chyba při ukládání do PocketBase:', error);
-            showToast('Chyba při ukládání úkolu', 'error');
+            console.error('Chyba při ukládání do Supabase:', error);
+            if (error.code === '23502') {
+                showToast('Text úkolu je povinný!', 'error');
+            } else {
+                showToast('Chyba při ukládání úkolu: ' + error.message, 'error');
+            }
         }
     });
 
