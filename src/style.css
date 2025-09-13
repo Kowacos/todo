@@ -1,15 +1,17 @@
+/* Reset & Base styles */
 body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   min-height: 100vh;
   overflow: hidden;
-  color: #111827;
+  color: #e2e8f0;
   position: relative;
   padding: 20px;
 }
 
+/* Grain effect */
 body::before {
   content: '';
   position: fixed;
@@ -17,11 +19,12 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.08)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.03)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.02)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.04)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
   pointer-events: none;
   z-index: 0;
 }
 
+/* Main container */
 .main-container {
   display: flex;
   width: 100%;
@@ -33,7 +36,8 @@ body::before {
   backdrop-filter: blur(20px);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  background: rgba(26, 26, 46, 0.8);
 }
 
 /* Desktop sidebar */
@@ -43,13 +47,9 @@ body::before {
   flex-direction: column;
   flex-basis: 350px;
   height: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #e2e8f0;
   padding: 40px 30px;
-  color: white;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
 }
@@ -103,7 +103,7 @@ body::before {
 
 .progress-fill {
   height: 100%;
-  background: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(90deg, #10b981 0%, #6ee7b7 100%);
   border-radius: 4px;
   transition: width 0.5s ease;
   width: 0%;
@@ -251,27 +251,24 @@ body::before {
   border: none;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
+  color: #e2e8f0;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   font-size: 15px;
   font-weight: 500;
   text-align: left;
   backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
 }
 
 .filter-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   color: white;
-  transform: translateX(8px);
 }
 
 .filter-btn.active {
-  background: rgba(255, 255, 255, 0.95);
-  color: #667eea;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  transform: translateX(0);
+  background: #2d2d4d;
+  color: #fff;
 }
 
 /* Bulk actions section */
@@ -298,393 +295,32 @@ body::before {
   padding: 10px 16px;
   border: none;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 14px;
   font-weight: 500;
   text-align: center;
   backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
 }
 
-/* Theme toggle section */
-.theme-section {
-  margin-bottom: 30px;
-  position: relative;
-  z-index: 1;
+.bulk-btn:hover {
+  background: #059669;
+  transform: translateY(-1px);
 }
 
-.theme-section h3 {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 15px;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.theme-toggle-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.theme-label {
-  font-size: 15px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.theme-switch {
-  position: fixed;
-  top: 20px;      /* Změna na horní okraj */
-  right: 20px;     /* Změna na pravý okraj */
-  z-index: 1000;
-  display: inline-block;
-  width: 60px;
-  height: 30px;
-}
-
-.theme-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.theme-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #e2e8f0; /* Změna: Plné, světle šedé pozadí */
-  border-radius: 30px;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  padding: 0 3px;
-}
-
-.theme-slider:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.theme-slider-icon {
-  width: 24px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex-shrink: 0;
-  transform: translateX(0);
-}
-
-.theme-slider-icon::before {
-  content: '☀️'; /* Ikona pro světlý režim */
-  display: flex; /* Použijeme flexbox pro perfektní centrování */
-  align-items: center; /* Vertikální centrování */
-  justify-content: center; /* Horizontální centrování */
-  width: 100%;
-  height: 100%;
-  font-size: 14px;
-  box-sizing: border-box;
-  transform: translateY(-1px); /* Tady je klíčová úprava */
-}
-
-input:checked + .theme-slider .theme-slider-icon {
-  transform: translateX(calc(100% + 3px * 2));
-}
-
-input:checked + .theme-slider .theme-slider-icon::before {
-  content: '🌙'; /* Ikona pro tmavý režim */
-  display: flex; /* Použijeme flexbox pro perfektní centrování */
-  align-items: center; /* Vertikální centrování */
-  justify-content: center; /* Horizontální centrování */
-  width: 100%; /* Vyplní celou šířku rodiče */
-  height: 100%; /* Vyplní celou výšku rodiče */
-  font-size: 14px; /* Zajištění správné velikosti ikony */
-  box-sizing: border-box; /* Aby padding a border nezvětšovaly prvek */
-}
-
-/* Dark theme styling for icon */
-.dark-theme .theme-slider-icon {
-  background: #1a1a2e;
-  color: white;
-}
-
-/* Dark theme styles */
-body.dark-theme {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-}
-
-body.dark-theme::before {
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain-dark" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.03)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.02)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.04)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain-dark)"/></svg>');
-}
-
-.dark-theme .main-container {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-}
-
-.dark-theme .desktop-sidebar {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-}
-
-.dark-theme .desktop-content {
-  background: #0f0f23;
-  color: #e2e8f0;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
-}
-
-.dark-theme .advanced-input-form {
-  background: #1a1a2e;
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #e2e8f0;
-}
-
-.dark-theme .form-label {
-  color: #cbd5e0;
-}
-
-.dark-theme .form-input,
-.dark-theme .form-select {
-  background: #16213e;
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #e2e8f0;
-}
-
-.dark-theme .form-input::placeholder {
-  color: #64748b;
-}
-
-.dark-theme .form-input:focus,
-.dark-theme .form-select:focus {
-  background: #13213e;
-  border-color: #667eea;
-  color: #e2e8f0;
-}
-
-.dark-theme .form-btn.secondary {
-  background: #374151;
-  color: #e2e8f0;
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.dark-theme .form-btn.secondary:hover {
-  background: #4b5563;
-}
-
-.dark-theme .todo-box {
-  background: #1a1a2e;
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #e2e8f0;
-}
-
-.dark-theme .stat-item {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.dark-theme .todo-box:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-.dark-theme .todo-text-span {
-  color: #f1f5f9;
-}
-
-.dark-theme .todo-box.completed {
-  background: #16213e;
-  opacity: 0.6;
-}
-
-.dark-theme .todo-box.completed .todo-text-span {
-  color: #64748b;
-}
-
-.dark-theme .todo-box.priority-high {
-  /* Změněno: Zvýšena neprůhlednost z 0.15 na 0.35 */
-  background: linear-gradient(90deg, rgba(239, 68, 68, 0.35) 0%, #1a1a2e 15%);
-}
-
-.dark-theme .todo-box.priority-medium {
-  /* Změněno: Zvýšena neprůhlednost z 0.15 na 0.35 */
-  background: linear-gradient(90deg, rgba(245, 158, 11, 0.35) 0%, #1a1a2e 15%);
-}
-
-.dark-theme .todo-box.priority-low {
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, #1a1a2e 15%);
-}
-
-.dark-theme .todo-box.overdue:not(.completed) {
-  background: linear-gradient(90deg, rgba(239, 68, 68, 0.2) 0%, #1a1a2e 15%);
-  animation: pulseDark 1s infinite alternate;
-}
-
-.dark-theme .todo-box.due-today:not(.completed) {
-  background: linear-gradient(90deg, rgba(245, 158, 11, 0.18) 0%, #1a1a2e 15%);
-}
-
-.dark-theme .todo-box.deleted {
-  background: #2d1b1b;
-  border-left-color: #ef4444;
-}
-
-.dark-theme .todo-box.deleted .todo-actions {
-  opacity: 1;
-}
-
-.dark-theme .desktop-checkbox {
-  border-color: #4b5563;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.dark-theme .desktop-checkbox:hover {
-  border-color: #667eea;
-  background: rgba(102, 126, 234, 0.1);
-}
-
-.dark-theme .todo-meta {
-  color: #94a3b8;
-}
-
-.dark-theme .todo-due-date {
-  background: #374151;
-  color: #e2e8f0;
-}
-
-.dark-theme .todo-time-estimate {
-  background: #312e81;
-  color: #c7d2fe;
-}
-
-.dark-theme .todo-notes {
-  background: #16213e;
-  color: #94a3b8;
-  border-left-color: #374151;
-}
-
-.dark-theme .todo-repeat-indicator {
-  background: #064e3b;
-  color: #6ee7b7;
-}
-
-.dark-theme .expand-indicator {
-  color: #64748b;
-}
-
-.dark-theme .empty-state {
-  color: #64748b;
-}
-
-.dark-theme .empty-state-title {
-  color: #cbd5e0;
-}
-
-.dark-theme .form-select {
-  /* Změna barvy SVG ikony pro tmavý režim */
-  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23cbd5e0" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>');
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 16px;
-}
-
-/* Floating Add Button - Apple style s opravenými animacemi */
-.desktop-add-btn {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: none;
-  background: linear-gradient(135deg, #ffffff, #f3f4f6);
-  color: #667eea;
-  font-size: 28px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000;
-  outline: none;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.desktop-add-btn:hover {
-  transform: scale(1.05) translateY(-3px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-  background: linear-gradient(135deg, #ffffff, #ffffff);
-}
-
-.desktop-add-btn:active {
-  transform: scale(0.98) translateY(-1px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.desktop-add-btn:focus {
-  outline: none;
-  box-shadow:
-          0 10px 25px rgba(0, 0, 0, 0.2),
-          0 0 0 4px rgba(102, 126, 234, 0.3);
-}
-
-.desktop-add-btn svg {
-  width: 28px;
-  height: 28px;
-  stroke-width: 2.5;
-}
-
-/* Dark theme verze */
-.dark-theme .desktop-add-btn {
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  color: #a855f7;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-}
-
-.dark-theme .desktop-add-btn:hover {
-  background: linear-gradient(135deg, #16213e, #0f0f23);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-}
-
-.dark-theme .desktop-add-btn:active {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-}
-
-.dark-theme .desktop-add-btn:focus {
-  box-shadow:
-          0 10px 25px rgba(0, 0, 0, 0.4),
-          0 0 0 4px rgba(168, 85, 247, 0.4);
-}
-
-/* Animace při načtení */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.bulk-btn:active {
+  background: #047857;
+  transform: translateY(0);
 }
 
 /* Main content area */
 .desktop-content {
   flex: 1;
   padding: 40px;
-  background: #f8f9fa;
+  background: #0f0f23; /* Velmi světlé zelené pozadí obsahu */
   overflow-y: auto;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
@@ -714,13 +350,13 @@ body.dark-theme::before {
 
 /* Advanced input form s opravenými animacemi */
 .advanced-input-form {
-  background: white;
+  background: #1a1a2e;
   border-radius: 16px;
   padding: 30px;
   margin-bottom: 30px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   display: none;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transform: translateY(-20px);
   opacity: 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -750,19 +386,21 @@ body.dark-theme::before {
 }
 
 .form-label {
+  color: #e2e8f0;
   font-size: 14px;
   font-weight: 600;
-  color: #374151;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .form-input, .form-select {
+  background: #16213e;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #e2e8f0;
   padding: 12px 16px;
-  border: 2px solid #e5e7eb;
+  border: 2px solid #86efac;
   border-radius: 10px;
   font-size: 16px;
-  background: #f9fafb;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
   resize: vertical;
@@ -773,19 +411,23 @@ textarea.form-input {
   line-height: 1.5;
 }
 
+.form-input::placeholder {
+  color: #64748b;
+}
+
 .form-input:focus, .form-select:focus {
-  outline: none;
+  background: #13213e;
   border-color: #667eea;
-  background: white;
+  color: #e2e8f0;
   box-shadow:
-          0 0 0 3px rgba(102, 126, 234, 0.1),
-          0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    0 0 0 3px rgba(102, 126, 234, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+  outline: none;
 }
 
 .form-select {
   appearance: none;
-  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>');
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23cbd5e0" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>');
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 16px;
@@ -811,36 +453,34 @@ textarea.form-input {
 }
 
 .form-btn.primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, #10b981 0%, #6ee7b7 100%);
+  color: #065f46;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.13);
 }
 
 .form-btn.primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.18);
+  color: #059669;
 }
 
 .form-btn.primary:active {
-  transform: translateY(0);
-  box-shadow: 0 3px 12px rgba(102, 126, 234, 0.4);
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 12px rgba(16, 185, 129, 0.16);
 }
 
 .form-btn.primary:focus {
   box-shadow:
-          0 4px 15px rgba(102, 126, 234, 0.3),
-          0 0 0 4px rgba(102, 126, 234, 0.2);
+          0 4px 15px rgba(16, 185, 129, 0.13),
+          0 0 0 4px rgba(16, 185, 129, 0.10);
 }
 
 .form-btn.secondary {
-  background: #f3f4f6;
-  color: #374151;
-  border: 2px solid #e5e7eb;
+  background: #374151;
+  color: #e2e8f0;
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .form-btn.secondary:hover {
-  background: #e5e7eb;
+  background: #4b5563;
   transform: translateY(-1px);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
@@ -870,14 +510,17 @@ textarea.form-input {
   display: flex;
   align-items: flex-start;
   padding: 24px;
-  background: white;
+  background: #1a1a2e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  backdrop-filter: blur(8px);
   border-radius: 16px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   border-left: 5px solid transparent;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
 }
 
 .todo-box.adding {
@@ -889,42 +532,40 @@ textarea.form-input {
 }
 
 .todo-box:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 }
 
 .todo-box.priority-high {
   border-left-color: #ef4444;
-  background: linear-gradient(90deg, rgba(239, 68, 68, 0.4) 0%, rgba(255, 255, 255, 0.4) 100%);
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.2) 0%, #1a1a2e 100%);
 }
 .todo-box.priority-medium {
   border-left-color: #f59e0b;
-  background: linear-gradient(90deg, rgba(245, 158, 11, 0.4) 0%, rgba(255, 255, 255, 0.4) 100%);
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.2) 0%, #1a1a2e 100%);
 }
 .todo-box.priority-low {
   border-left-color: #10b981;
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.4) 0%, rgba(255, 255, 255, 0.4) 100%);
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.2) 0%, #1a1a2e 100%);
 }
 
 .todo-box.completed {
-  background: #f8f9fa;
-  opacity: 0.7;
+  background: #16213e;
+  opacity: 0.6;
 }
 
 .todo-box.completed .todo-text-span {
   text-decoration: line-through;
-  color: #6b7280;
+  color: #64748b;
 }
 
 .todo-box.overdue:not(.completed) {
   border-left-color: #ef4444;
-  background: linear-gradient(90deg, rgba(239, 68, 68, 0.1) 0%, white 15%);
-  animation: pulseLight 1s infinite alternate;
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.2) 0%, #1a1a2e 100%);
 }
 
 .todo-box.due-today:not(.completed) {
   border-left-color: #f59e0b;
-  background: linear-gradient(90deg, rgba(245, 158, 11, 0.08) 0%, white 15%);
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.2) 0%, #1a1a2e 100%);
 }
 
 .todo-box.dragging {
@@ -944,13 +585,13 @@ textarea.form-input {
 }
 
 .todo-box.deleted {
-  background: #fef2f2;
+  background: #2d1b1b;
   border-left-color: #ef4444;
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 .todo-box.deleted .todo-text-span {
-  color: #991b1b;
+  color: #fca5a5;
   text-decoration: line-through;
 }
 
@@ -1004,7 +645,7 @@ textarea.form-input {
 .todo-text-span {
   font-size: 18px;
   font-weight: 500;
-  color: #111827;
+  color: #e2e8f0;
   line-height: 1.5;
   word-break: break-word;
   overflow-wrap: break-word;
@@ -1016,268 +657,59 @@ textarea.form-input {
   align-items: center;
   gap: 12px;
   font-size: 14px;
-  color: #6b7280;
+  color: #94a3b8;
   flex-wrap: wrap;
 }
 
+/* Kategorie */
 .todo-category {
-  background: #667eea;
-  color: white;
+  background: #2d2d4d;
+  color: #e2e8f0;
   padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-.todo-category.work { background: #f59e0b; }
-.todo-category.personal { background: #10b981; }
-.todo-category.shopping { background: #8b5cf6; }
-.todo-category.health { background: #ef4444; }
-.todo-category.study { background: #3b82f6; }
-.todo-category.finance { background: #059669; }
+.todo-category.work { background: #2d2d4d; color: #e2e8f0; }
+.todo-category.personal { background: #374151; color: #e2e8f0; }
+.todo-category.shopping { background: #2d2d4d; color: #e2e8f0; }
+.todo-category.health { background: #2d2d4d; color: #e2e8f0; }
+.todo-category.study { background: #374151; color: #e2e8f0; }
+.todo-category.finance { background: #2d2d4d; color: #e2e8f0; }
 
 .todo-due-date {
+  background: #374151;
+  color: #e2e8f0;
   font-weight: 600;
   padding: 4px 8px;
   border-radius: 6px;
-  background: #f3f4f6;
 }
 
 .todo-due-date.overdue {
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
+  color: #059669;
+  background: #a7f3d0;
 }
 
 .todo-due-date.today {
-  color: #f59e0b;
-  background: rgba(245, 158, 11, 0.1);
+  color: #065f46;
+  background: #bbf7d0;
 }
 
 .todo-time-estimate {
+  background: #a7f3d0;
+  color: #065f46;
   font-weight: 600;
   padding: 4px 8px;
   border-radius: 6px;
-  background: #e0e7ff;
-  color: #3730a3;
   font-size: 12px;
-}
-
-.todo-notes {
-  margin-top: 8px;
-  padding: 12px 16px;
-  background: #f8fafc;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #64748b;
-  line-height: 1.4;
-  border-left: 3px solid #e2e8f0;
-  white-space: pre-wrap;
 }
 
 .todo-repeat-indicator {
+  background: #a7f3d0;
+  color: #065f46;
   font-weight: 600;
   padding: 4px 8px;
   border-radius: 6px;
-  background: #dcfce7;
-  color: #166534;
   font-size: 12px;
 }
-
-.todo-box.has-notes {
-  cursor: pointer;
-}
-
-.todo-box.expanded .todo-notes {
-  display: block;
-}
-
-.todo-box:not(.expanded) .todo-notes {
-  display: none;
-}
-
-.expand-indicator {
-  font-size: 12px;
-  color: #9ca3af;
-  margin-left: 8px;
-  transition: transform 0.3s ease;
-}
-
-.todo-box.expanded .expand-indicator {
-  transform: rotate(180deg);
-}
-
-/* Todo actions */
-.todo-actions {
-  display: flex;
-  gap: 8px;
-  margin-left: 16px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  flex-shrink: 0;
-  align-self: flex-start;
-}
-
-.todo-box:hover .todo-actions {
-  opacity: 1;
-  animation: slideInLeft 0.3s ease-out;
-}
-
-.todo-actions button {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.edit-btn {
-  background: #f59e0b;
-  color: white;
-}
-
-.edit-btn:hover {
-  background: #d97706;
-  transform: scale(1.1);
-}
-
-.delete-btn {
-  background: #ef4444;
-  color: white;
-}
-
-.delete-btn:hover {
-  background: #dc2626;
-  transform: scale(1.1);
-}
-
-.restore-btn {
-  background: #10b981;
-  color: white;
-}
-
-.restore-btn:hover {
-  background: #059669;
-  transform: scale(1.1);
-}
-
-.permanent-delete-btn {
-  background: #dc2626;
-  color: white;
-}
-
-.permanent-delete-btn:hover {
-  background: #b91c1c;
-  transform: scale(1.1);
-}
-
-/* Empty state */
-.empty-state {
-  text-align: center;
-  padding: 80px 40px;
-  color: #6b7280;
-}
-
-.empty-state-icon {
-  font-size: 80px;
-  margin-bottom: 20px;
-  opacity: 0.5;
-}
-
-.empty-state-title {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #374151;
-}
-
-.empty-state-subtitle {
-  font-size: 18px;
-  line-height: 1.6;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-/* Notification badge */
-.notification-badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #ef4444;
-  color: white;
-  border-radius: 12px;
-  padding: 4px 8px;
-  font-size: 12px;
-  font-weight: 700;
-  min-width: 20px;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-}
-
-/* Toast notifications */
-.toast {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  background: #10b981;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 500;
-  z-index: 10000;
-  animation: slideInRight 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.toast.error {
-  background: #ef4444;
-  display: none;
-}
-
-.toast.warning {
-  background: #f59e0b;
-  display: none;
-}
-
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-/* New animations */
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeOutUp {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-20px); }
-}
-@keyframes pulseLight {
-  from { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
-  to { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
-}
-@keyframes pulseDark {
-  from { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); }
-  to { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
-}
-@keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
 
 /* Hide mobile elements */
 .ios-header,
@@ -1333,4 +765,189 @@ textarea.form-input {
     width: 44px;
     height: 44px;
   }
+}
+
+/* Empty state styles */
+.empty-state {
+  text-align: center;
+  padding: 80px 40px;
+  color: #6b7280;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+  /* Pokud je potřeba, můžeš použít např. emoji: */
+  /* content: "📝"; */
+}
+
+.empty-state-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #e2e8f0;
+  letter-spacing: -1px;
+}
+
+.empty-state-subtitle {
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 400px;
+  margin: 0 auto;
+  color: #94a3b8;
+}
+
+/* Floating Add Button */
+.desktop-add-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: white;
+  font-size: 28px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  outline: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.desktop-add-btn:hover {
+  transform: scale(1.05) translateY(-3px);
+  box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.desktop-add-btn:active {
+  transform: scale(0.98) translateY(-1px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Akční tlačítka pro všechny kategorie */
+.todo-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.todo-actions button {
+  width: 42px;
+  height: 42px;
+  background: #2d2d4d;
+  border: none;
+  border-radius: 12px;
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.todo-actions button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.todo-actions button svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+}
+
+.todo-actions .edit-btn {
+  background: #374151;
+}
+
+.todo-actions .edit-btn:hover {
+  background: #4b5563;
+  color: #6ee7b7;
+}
+
+.todo-actions .delete-btn {
+  background: #471818;
+}
+
+.todo-actions .delete-btn:hover {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+
+/* Login styles */
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.login-box {
+  background: #1a1a2e;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-box h2 {
+  color: white;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.login-box .form-group {
+  margin-bottom: 20px;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 12px;
+  background: #16213e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: white;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.login-box button:hover {
+  background: #059669;
 }
