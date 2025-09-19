@@ -137,7 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
           notes: document.getElementById('task-notes').value,
           time_estimate: document.getElementById('task-time-estimate').value,
           repeat: document.getElementById('task-repeat').value,
-          completed: false
+          completed: false,
+          updated_at: new Date().toISOString()
         }
 
         if (editingTaskId) {
@@ -207,40 +208,33 @@ function updateStats(tasks) {
 
   // Dnešní datum v místním časovém pásmu (YYYY-MM-DD)
   const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const todayStr = today.toISOString().slice(0, 10)
+  const todayStr = today.getFullYear() + '-' + 
+    String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+    String(today.getDate()).padStart(2, '0')
 
-  // Hotovo dnes: completed=true a updated_at je dnes (funguje i bez completed_at)
-  const completedToday = visibleTasks.filter(
-    t =>
-      t.completed &&
-      t.updated_at &&
-      new Date(t.updated_at).toISOString().slice(0, 10) === todayStr
-  ).length
+  console.log('Debug - dnes je:', todayStr)
 
-  // Série dní s dokončeným úkolem (streak) - stále podle due_date
-  let streak = 0
-  let date = new Date()
-  date.setHours(0, 0, 0, 0)
-  while (true) {
-    const dateStr = date.toISOString().slice(0, 10)
-    if (visibleTasks.some(t =>
-      t.completed &&
-      t.due_date &&
-      new Date(t.due_date).toISOString().slice(0, 10) === dateStr
-    )) {
-      streak++
-      date.setDate(date.getDate() - 1)
-    } else {
-      break
-    }
-  }
+  // Hotovo dnes: completed=true a updated_at je dnes
+  const completedToday = visibleTasks.filter(t => {
+    if (!t.completed || !t.updated_at) return false
+    
+    const updatedDate = new Date(t.updated_at)
+    const updatedStr = updatedDate.getFullYear() + '-' + 
+      String(updatedDate.getMonth() + 1).padStart(2, '0') + '-' + 
+      String(updatedDate.getDate()).padStart(2, '0')
+    
+    console.log('Debug - úkol', t.text, 'updated_at:', t.updated_at, 'datum:', updatedStr, 'je dnes?', updatedStr === todayStr)
+    
+    return updatedStr === todayStr
+  }).length
+
+  console.log('Debug - počet splněných dnes:', completedToday)
+
   const completed = visibleTasks.filter(t => t.completed).length
   const progress = total > 0 ? Math.round((completed / total) * 100) : 0
 
   document.getElementById('total-tasks').textContent = total
   document.getElementById('completed-today').textContent = completedToday
-  document.getElementById('streak-days').textContent = streak
   document.getElementById('progress-fill').style.width = progress + '%'
   document.getElementById('progress-text').textContent = `${progress}% dokončeno`
   document.getElementById('task-summary').textContent =
@@ -312,19 +306,32 @@ function updateTaskList(tasks) {
 // Globální funkce pro akční tlačítka
 window.toggleTask = async (id) => {
   try {
+    console.log('Debug - toggleTask volán pro id:', id)
+    
     const { data: task } = await supabase
       .from('todos')
       .select('completed')
       .eq('id', id)
       .single()
 
+    console.log('Debug - současný stav completed:', task.completed)
+    
+    const newUpdatedAt = new Date().toISOString()
+    console.log('Debug - nastavuji updated_at na:', newUpdatedAt)
+
     const { error } = await supabase
       .from('todos')
-      .update({ completed: !task.completed })
+      .update({ 
+        completed: !task.completed,
+        updated_at: newUpdatedAt
+      })
       .eq('id', id)
 
     if (error) throw error
+    
+    console.log('Debug - úkol aktualizován, načítám seznam a statistiky')
     loadTasks()
+    loadAllTasksForStats() // Přidáno pro aktualizaci statistik
   } catch (error) {
     console.error('Error toggling task:', error)
   }
@@ -446,7 +453,8 @@ document.addEventListener('DOMContentLoaded', () => {
           notes: document.getElementById('task-notes').value,
           time_estimate: document.getElementById('task-time-estimate').value,
           repeat: document.getElementById('task-repeat').value,
-          completed: false
+          completed: false,
+          updated_at: new Date().toISOString()
         }
 
         if (editingTaskId) {

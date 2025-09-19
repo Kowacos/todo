@@ -48,6 +48,20 @@
           <div class="progress-text" id="progress-text">0% dokončeno</div>
         </div>
 
+        <div class="stats-section">
+          <h3>Statistiky</h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-number" id="total-tasks">0</div>
+              <div class="stat-label">Celkem</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number" id="completed-today">0</div>
+              <div class="stat-label">Dnes hotovo</div>
+            </div>
+          </div>
+        </div>
+
         <div class="search-section">
           <div class="search-container">
             <input type="text" id="search-input" class="search-input" placeholder="🔍 Hledat úkoly...">
@@ -67,30 +81,12 @@
           </div>
         </div>
 
-        <div class="stats-section">
-          <h3>Statistiky</h3>
-          <div class="stats-grid">
-            <div class="stat-item">
-              <div class="stat-number" id="total-tasks">0</div>
-              <div class="stat-label">Celkem</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number" id="completed-today">0</div>
-              <div class="stat-label">Dnes hotovo</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number" id="streak-days">0</div>
-              <div class="stat-label">Série dní</div>
-            </div>
-          </div>
-        </div>
-
         <div class="bulk-actions-section" id="bulk-actions" style="display: none;">
           <h3>Hromadné akce</h3>
           <div class="bulk-buttons">
-            <button class="bulk-btn" id="bulk-complete">Dokončit všechny</button>
-            <button class="bulk-btn" id="bulk-delete">Smazat všechny</button>
-            <button class="bulk-btn" id="clear-completed">Vyčistit dokončené</button>
+            <button class="bulk-btn" id="bulk-complete">✅ Dokončit</button>
+            <button class="bulk-btn" id="bulk-delete">🗑️ Smazat</button>
+            <button class="bulk-btn" id="clear-completed" style="grid-column: 1 / -1;">🧹 Vyčistit dokončené</button>
           </div>
         </div>
       </aside>

@@ -52,6 +52,26 @@ body::before {
   padding: 40px 30px;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar styling */
+.desktop-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.desktop-sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.desktop-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.desktop-sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .desktop-sidebar::before {
@@ -206,11 +226,6 @@ body::before {
   transform: translateY(-2px);
 }
 
-.stat-item:nth-child(3) {
-  grid-column: 1 / -1;
-  display:none;
-}
-
 .stat-number {
   font-size: 24px;
   font-weight: 700;
@@ -241,24 +256,39 @@ body::before {
 }
 
 .filter-buttons {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
 .filter-btn {
-  padding: 12px 20px;
+  padding: 10px 12px;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.1);
   color: #e2e8f0;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 500;
-  text-align: left;
+  text-align: center;
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+}
+
+/* Desktop layout - původní rozvržení pouze pro velké monitory */
+@media (min-width: 1600px) {
+  .filter-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .filter-btn {
+    padding: 12px 20px;
+    font-size: 15px;
+    text-align: left;
+  }
 }
 
 .filter-btn:hover {
@@ -286,24 +316,47 @@ body::before {
 }
 
 .bulk-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
 }
 
 .bulk-btn {
-  padding: 10px 16px;
+  padding: 8px 10px;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
   color: #e2e8f0;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   text-align: center;
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+}
+
+/* Desktop layout - původní rozvržení pouze pro velké monitory */
+@media (min-width: 1600px) {
+  .bulk-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .bulk-btn {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+  
+  /* Delší text na velkých obrazovkách */
+  #bulk-complete::after {
+    content: " všechny";
+  }
+  
+  #bulk-delete::after {
+    content: " všechny";
+  }
 }
 
 .bulk-btn:hover {
@@ -719,7 +772,36 @@ textarea.form-input {
   display: none;
 }
 
-/* Responsive */
+/* Responsive - Medium screens (tablets, small laptops) */
+@media (max-width: 1024px) {
+  .main-container {
+    max-width: 100%;
+  }
+  
+  .desktop-sidebar {
+    flex-basis: 300px;
+    min-width: 280px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  
+  .stat-item {
+    padding: 12px 8px;
+  }
+  
+  .stat-number {
+    font-size: 20px;
+  }
+  
+  .stat-label {
+    font-size: 11px;
+  }
+}
+
+/* Responsive - Small screens (phones) */
 @media (max-width: 768px) {
   body {
     padding: 10px;
@@ -732,7 +814,25 @@ textarea.form-input {
 
   .desktop-sidebar {
     width: 100%;
-    padding: 20px;
+    padding: 20px 20px 80px 20px;
+    height: auto;
+    max-height: calc(100vh - 20px);
+    overflow-y: auto;
+  }
+  
+  /* Fade effect na spodek sidebaru pro mobile */
+  .desktop-sidebar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(transparent, rgba(26, 26, 46, 0.95));
+    pointer-events: none;
+    z-index: 2;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
   }
 
   .desktop-content {
@@ -745,8 +845,20 @@ textarea.form-input {
 
   .stats-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  
+  .stat-item {
+    padding: 14px 8px;
+  }
+  
+  .stat-number {
+    font-size: 20px;
+  }
+  
+  .stat-label {
+    font-size: 11px;
   }
 
   .bulk-buttons {
@@ -764,6 +876,33 @@ textarea.form-input {
   .todo-actions button {
     width: 44px;
     height: 44px;
+  }
+}
+
+/* Extra small screens - very small phones */
+@media (max-width: 480px) {
+  .desktop-sidebar {
+    padding: 15px 15px 70px 15px;
+    max-height: calc(100vh - 10px);
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  
+  .stat-item {
+    padding: 12px 8px;
+    text-align: center;
+  }
+  
+  .stat-number {
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+  
+  .stat-label {
+    font-size: 10px;
   }
 }
 

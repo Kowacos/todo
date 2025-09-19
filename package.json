@@ -9,9 +9,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@supabase/supabase-js": "2.39.0"
+    "@supabase/supabase-js": "2.39.0",
+    "express": "^5.1.0"
   },
   "devDependencies": {
     "vite": "5.0.0"
-  }
+  },
+  "description": "muj todo list",
+  "main": "vite.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kowacos/todo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kowacos/todo/issues"
+  },
+  "homepage": "https://github.com/Kowacos/todo#readme"
 }
